@@ -1,5 +1,6 @@
 "use client";
 import { Stack, Autocomplete, TextField, useMediaQuery } from "@mui/material";
+import Heading from "./components/Heading";
 import ImageFrame from "./components/ImageFrame";
 import ButtonGroup from "./components/ButtonGroup";
 import games from "./games.json";
@@ -11,8 +12,11 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <Stack spacing={2}>
-        <p>Placeholder for logo/heading?</p>
-        <ImageFrame url="https://images.igdb.com/igdb/image/upload/t_cover_big/co1vcf.jpg" />
+        <Heading />
+        <ImageFrame
+          url="https://images.igdb.com/igdb/image/upload/t_cover_big/co1vcf.jpg"
+          amountOfBlur={32}
+        />
         <Autocomplete
           id="game-autocomplete"
           freeSolo

@@ -6,25 +6,25 @@ interface ButtonGroupProps {
 }
 
 const ButtonGroup: React.FC<ButtonGroupProps> = ({ isLargeScreen }) => {
-  const buttonStyles = {
-    width: "200px",
+  const commonButtonStyles = {
+    width: isLargeScreen ? "200px" : "auto",
   };
 
-  return isLargeScreen ? (
-    <Stack direction="row" spacing={2}>
-      <Button variant="outlined" sx={buttonStyles}>
+  return (
+    <Stack
+      direction={isLargeScreen ? "row" : "column-reverse"}
+      spacing={isLargeScreen ? 2 : 1}
+    >
+      <Button variant="outlined" sx={commonButtonStyles}>
         Skip
       </Button>
-      <Button variant="contained" color="success" sx={buttonStyles}>
+      <Button
+        variant="contained"
+        className="white bg-gray-800 hover:bg-gray-950"
+        sx={commonButtonStyles}
+      >
         Submit
       </Button>
-    </Stack>
-  ) : (
-    <Stack direction="column" spacing={1}>
-      <Button variant="contained" color="success">
-        Submit
-      </Button>
-      <Button variant="outlined">Skip</Button>
     </Stack>
   );
 };
