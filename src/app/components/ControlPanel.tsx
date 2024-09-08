@@ -1,11 +1,15 @@
 import React from "react";
 import { Stack, Button } from "@mui/material";
 
-interface ButtonGroupProps {
+interface ControlPanelProps {
   isLargeScreen: boolean;
+  onSubmit: () => void;
 }
 
-const ButtonGroup: React.FC<ButtonGroupProps> = ({ isLargeScreen }) => {
+const ControlPanel: React.FC<ControlPanelProps> = ({
+  isLargeScreen,
+  onSubmit,
+}) => {
   const commonButtonStyles = {
     width: isLargeScreen ? "200px" : "auto",
   };
@@ -22,6 +26,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({ isLargeScreen }) => {
         variant="contained"
         className="white bg-gray-800 hover:bg-gray-950"
         sx={commonButtonStyles}
+        onClick={onSubmit}
       >
         Submit
       </Button>
@@ -29,4 +34,4 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({ isLargeScreen }) => {
   );
 };
 
-export default ButtonGroup;
+export default ControlPanel;
