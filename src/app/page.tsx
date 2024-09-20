@@ -1,10 +1,10 @@
 "use client";
 import { Stack, Autocomplete, TextField, useMediaQuery } from "@mui/material";
 import { useState, useEffect } from "react";
+import axios from "axios";
 import Heading from "./components/Heading";
 import ImageFrame from "./components/ImageFrame";
 import ControlPanel from "./components/ControlPanel";
-import games from "./games.json";
 
 const DEFAULT_IMAGE_BLUR = 32;
 const BLUR_DECREMENT = 4;
@@ -12,25 +12,44 @@ const BLUR_DECREMENT = 4;
 type Game = {
   id: number;
   name: string;
-  cover: number;
+  cover: string;
 };
 
 export default function Home() {
-  const gameOptions: Game[] = games;
+  const [gameOptions, setGameOptions] = useState<Game[]>([]);
   const [randomGame, setRandomGame] = useState<Game | undefined>(undefined);
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
   const [amountOfBlur, setAmountOfBlur] = useState<number>(DEFAULT_IMAGE_BLUR);
   const isLargeScreen = useMediaQuery("(min-width:600px)");
 
+  useEffect(() => {
+    fetchGames();
+  }, []);
+
+  useEffect(() => {
+    if (gameOptions.length > 0) {
+      chooseRandomGame();
+    }
+  }, [gameOptions]);
+
+  const fetchGames = async () => {
+    try {
+      const response = await axios.get("/api/games"); // Call your own API route
+      const fetchedGames = response.data.map((game: any) => ({
+        id: game.id,
+        name: game.name,
+        cover: game.cover ? game.cover.url : "",
+      }));
+      setGameOptions(fetchedGames);
+    } catch (error) {
+      console.error("Error fetching games from IGDB API:", error);
+    }
+  };
+
   const chooseRandomGame = () => {
     const randomIndex = Math.floor(Math.random() * gameOptions.length);
     setRandomGame(gameOptions[randomIndex]);
   };
-
-  // Choose a random game when the component mounts
-  useEffect(() => {
-    chooseRandomGame();
-  }, [gameOptions]);
 
   const checkIfGuessMatches = () => {
     if (!selectedGame) {
@@ -56,12 +75,19 @@ export default function Home() {
     }
   };
 
+  const transformCoverUrl = (url: string) => {
+    const httpsUrl = url.startsWith("//")
+      ? `https:${url}`
+      : url.replace(/^http:/, "https:");
+    return httpsUrl.replace("t_thumb", "t_cover_big");
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <Stack spacing={2}>
         <Heading />
         <ImageFrame
-          url="https://images.igdb.com/igdb/image/upload/t_cover_big/co1vcf.jpg"
+          url={transformCoverUrl(randomGame?.cover ?? "")}
           amountOfBlur={amountOfBlur}
         />
         <Autocomplete
@@ -75,7 +101,6 @@ export default function Home() {
           isLargeScreen={isLargeScreen}
           onSubmit={checkIfGuessMatches}
         />
-        <p>{randomGame?.name}</p>
       </Stack>
     </main>
   );
