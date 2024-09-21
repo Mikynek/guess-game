@@ -1,25 +1,29 @@
 "use client";
-import { Stack, Autocomplete, TextField, useMediaQuery } from "@mui/material";
+import {
+  Stack,
+  Autocomplete,
+  TextField,
+  Alert,
+  useMediaQuery,
+} from "@mui/material";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { transformCoverUrl } from "./utils/utils";
+import { Game } from "./types/types";
 import Heading from "./components/Heading";
 import ImageFrame from "./components/ImageFrame";
 import ControlPanel from "./components/ControlPanel";
+import HistoryPanel from "./components/HistoryPanel";
 
 const DEFAULT_IMAGE_BLUR = 32;
 const BLUR_DECREMENT = 4;
-
-type Game = {
-  id: number;
-  name: string;
-  cover: string;
-};
 
 export default function Home() {
   const [gameOptions, setGameOptions] = useState<Game[]>([]);
   const [randomGame, setRandomGame] = useState<Game | undefined>(undefined);
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
   const [amountOfBlur, setAmountOfBlur] = useState<number>(DEFAULT_IMAGE_BLUR);
+  const [guessHistory, setGuessHistory] = useState<React.ReactNode[]>([]);
   const isLargeScreen = useMediaQuery("(min-width:600px)");
 
   useEffect(() => {
@@ -60,7 +64,12 @@ export default function Home() {
     if (randomGame?.name === selectedGame) {
       setAmountOfBlur(DEFAULT_IMAGE_BLUR);
       chooseRandomGame();
-      alert("Correct!");
+      setGuessHistory((prevHistory) => [
+        <Alert severity="success" key={prevHistory.length}>
+          Correct! The game was {randomGame.name}.
+        </Alert>,
+        ...prevHistory,
+      ]);
     } else {
       const guessGameIndex = gameOptions.findIndex(
         (game) => game.name === selectedGame
@@ -71,15 +80,13 @@ export default function Home() {
       }
 
       setAmountOfBlur((prev) => Math.max(prev - BLUR_DECREMENT, 0));
-      alert("Incorrect! Try again.");
+      setGuessHistory((prevHistory) => [
+        <Alert severity="error" key={prevHistory.length}>
+          Incorrect! You guessed {selectedGame}.
+        </Alert>,
+        ...prevHistory,
+      ]);
     }
-  };
-
-  const transformCoverUrl = (url: string) => {
-    const httpsUrl = url.startsWith("//")
-      ? `https:${url}`
-      : url.replace(/^http:/, "https:");
-    return httpsUrl.replace("t_thumb", "t_cover_big");
   };
 
   return (
@@ -101,6 +108,7 @@ export default function Home() {
           isLargeScreen={isLargeScreen}
           onSubmit={checkIfGuessMatches}
         />
+        <HistoryPanel>{guessHistory}</HistoryPanel>
       </Stack>
     </main>
   );

@@ -18,6 +18,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
     <Stack
       direction={isLargeScreen ? "row" : "column-reverse"}
       spacing={isLargeScreen ? 2 : 1}
+      justifyContent={"space-around"}
     >
       <Button variant="outlined" sx={commonButtonStyles}>
         Skip

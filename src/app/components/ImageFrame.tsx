@@ -11,9 +11,11 @@ const ImageFrame: React.FC<ImageFrameProps> = ({ url, amountOfBlur = 0 }) => (
     <Image
       src={url}
       alt="Game cover"
-      layout="fill"
-      objectFit="cover"
-      style={{ filter: `blur(${amountOfBlur}px)` }}
+      fill
+      style={{
+        objectFit: "cover",
+        filter: `blur(${amountOfBlur}px)`,
+      }}
       priority
     />
   </div>
