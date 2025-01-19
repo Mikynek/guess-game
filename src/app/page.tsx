@@ -5,6 +5,7 @@ import {
   TextField,
   Alert,
   useMediaQuery,
+  Divider,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -65,6 +66,7 @@ export default function Home() {
       setAmountOfBlur(DEFAULT_IMAGE_BLUR);
       chooseRandomGame();
       setGuessHistory((prevHistory) => [
+        <Divider/>,
         <Alert severity="success" key={prevHistory.length}>
           Correct! The game was {randomGame.name}.
         </Alert>,
