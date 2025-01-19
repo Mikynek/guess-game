@@ -1,19 +1,20 @@
 import React from "react";
 import Image from "next/image";
+import CircularProgress from "@mui/material/CircularProgress";
 
 type ImageFrameProps = {
   url?: string;
   amountOfBlur?: number;
 };
 
-const ImageFrame: React.FC<ImageFrameProps> = ({ url, amountOfBlur = 0 }) => {
-  // Placeholder component for loading or missing images
-  const Placeholder = () => (
-    <div className="flex flex-col items-center justify-center min-w-72 h-80 border-4 border-gray-700 overflow-hidden bg-gray-200">
-      <p className="text-gray-500">Loading...</p>
-    </div>
-  );
+// Placeholder component for loading or missing images
+const Placeholder = () => (
+  <div className="flex flex-col items-center justify-center min-w-72 h-80 border-4 border-gray-700 overflow-hidden">
+    <CircularProgress color="inherit" />
+  </div>
+);
 
+const ImageFrame: React.FC<ImageFrameProps> = ({ url, amountOfBlur = 0 }) => {
   if (!url) {
     return <Placeholder />;
   }
